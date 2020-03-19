@@ -4,6 +4,7 @@ package rpi
 #cgo LDFLAGS: -lwiringPi
 
 #include <wiringPi.h>
+#include <softPwm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #define nil ((void*)0)
@@ -31,6 +32,18 @@ static void my_digitalWrite(int p, int m) {
 
 static int my_digitalRead(int p) {
     return digitalRead(p);
+}
+
+static void my_pullUpDnControl(int p, int m) {
+    return pullUpDnControl(p, m);
+}
+
+static void my_softPwmCreate(int p) {
+    softPwmCreate(p, 0, 100);
+}
+
+static void my_softPwmWrite(int p, int v) {
+    softPwmWrite (p, v) ;
 }
 
 static void(*callback_func)(void (*f)(void*), void*);
@@ -255,12 +268,24 @@ func PinMode(pin int, mode int) {
 	C.my_pinMode(C.int(pin), C.int(mode))
 }
 
+func PullUpDnControl(pin int, mode int){
+        C.my_pullUpDnControl(C.int(pin), C.int(mode))
+}
+
 func DigitalWrite(pin int, mode int) {
 	C.my_digitalWrite(C.int(pin), C.int(mode))
 }
 
 func DigitalRead(pin int) int {
 	return int(C.my_digitalRead(C.int(pin)))
+}
+
+func SoftPwmWrite(pin int, value int){
+        C.my_softPwmWrite(C.int(pin), C.int(value))
+}
+
+func SoftPwmCreate(pin int){
+        C.my_softPwmCreate(C.int(pin))
 }
 
 func Delay(ms int) {
